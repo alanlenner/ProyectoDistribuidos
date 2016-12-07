@@ -49,7 +49,7 @@ public class Principal{
 			while(true){
 				Socket ss = s.accept();
 				System.out.println("Recibiendo conexion numero" + i );
-				new ManejoHilos(ss, i, banco1, banco2, banco3);
+				new ManejoHilos(ss, i, banco1, banco2, banco3).start();
 				i++;
 			}
 			

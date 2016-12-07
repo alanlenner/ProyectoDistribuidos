@@ -23,7 +23,8 @@ class Fumador{
 		
 		try{
 			
-			socket = new Socket("127.0.0.1", 50006);
+			//socket = new Socket("127.0.0.1", 50006);
+			socket = new Socket("190.38.247.224", 50006);
 			brIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pwOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true); 
 			

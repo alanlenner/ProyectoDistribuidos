@@ -1,12 +1,13 @@
 package ucab.fumadores;
 
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
 @SuppressWarnings("unchecked")
 //i put the suppress warning in because of the converting between classes in the array
-public class BancoThread extends Thread {
+public class BancoThread extends Thread implements Serializable{
 	
 	private int cantidad;
 	private int tipo;
@@ -22,7 +23,16 @@ public class BancoThread extends Thread {
 	
 	@Override
 	public void run() {
-		//
+	
+		while (true){
+			System.out.println("Hola soy el banco "+ this.tipo + " Mi cantidad es "+ this.cantidad);
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	// Obtiene la cantidad de un banco solicitado, retorna la cantidad si y solo si el tipo del banco es el consultado
