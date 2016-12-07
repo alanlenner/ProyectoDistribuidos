@@ -1,11 +1,40 @@
 package ucab.fumadores;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 class Fumador{
 	
 	public static void main(String[] args) {
+		
+		Socket socket = null;
+		BufferedReader brIn = null;
+		PrintWriter pwOut = null;
+		DataInputStream disIn = new DataInputStream(System.in);
+		
 		Fumador cliente1 = new Fumador(1);
-		Fumador cliente2 = new Fumador(2);
-		Fumador cliente3 = new Fumador(3);
+		
+		try{
+			
+			socket = new Socket("127.0.0.1", 50006);
+			brIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            pwOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true); 
+			
+		} catch (UnknownHostException e) {  
+			System.err.println("No conozco al host: " + "127.0.0.1");
+        } catch (IOException e) {
+            System.err.println("Error de E/S para la conexion con: " + "127.0.0.1");
+        }catch (NullPointerException e) {
+            System.err.println("Error de E/S para la conexion con: " + "127.0.0.1");
+        }
+		
 	}	
 	
 	private int tipo;

@@ -1,6 +1,13 @@
 package ucab.fumadores;
 
-public class Principal implements Runnable{
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.LinkedList;
+
+public class Principal{
 
 	public static void main(String[] args) {
 		
@@ -24,8 +31,7 @@ public class Principal implements Runnable{
 		System.out.println("    '8ggg8P'                   Muñoz Alan");
 		System.out.println("");
 		
-		// Tiempo inicial de referencia
-		//long initialTime = System.currentTimeMillis();
+		
 		BancoThread banco1 = new BancoThread(1);
 		BancoThread banco2 = new BancoThread(2);
 		BancoThread banco3 = new BancoThread(3);
@@ -34,13 +40,26 @@ public class Principal implements Runnable{
 		banco2.start();
 		banco3.start();
 		
+		try {
+			
+			ServerSocket s = new ServerSocket(50006);
+			
+			int i = 1;
+			
+			while(true){
+				Socket ss = s.accept();
+				System.out.println("Recibiendo conexion numero" + i );
+				new ManejoHilos(ss, i, banco1, banco2, banco3);
+				i++;
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
-	@Override
-	public void run() {
-		//
-	}
-	
 }
 
 

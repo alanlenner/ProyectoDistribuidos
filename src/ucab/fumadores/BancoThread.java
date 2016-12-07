@@ -1,5 +1,6 @@
 package ucab.fumadores;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,16 +22,7 @@ public class BancoThread extends Thread {
 	
 	@Override
 	public void run() {
-	
-		while (true){
-			System.out.println("Hola soy el banco "+ this.tipo + " Mi cantidad es "+ this.cantidad);
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		//
 	}
 	
 	// Obtiene la cantidad de un banco solicitado, retorna la cantidad si y solo si el tipo del banco es el consultado
