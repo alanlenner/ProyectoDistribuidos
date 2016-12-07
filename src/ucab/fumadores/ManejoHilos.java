@@ -1,8 +1,13 @@
 package ucab.fumadores;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 
@@ -14,12 +19,9 @@ public class ManejoHilos extends Thread{
 		private BancoThread banco3;
 		private Socket socket;
 		private int nroConexion;
-		
-		private ObjectOutputStream oos;
-		private ObjectInputStream ois;
-		
 		private int bancoAgregar;
 		
+		//
 		public ManejoHilos(Socket socket, int nroConexion, BancoThread banco1, BancoThread banco2, BancoThread banco3){
 			this.banco1 = banco1;
 			this.banco2 = banco2;
@@ -31,54 +33,66 @@ public class ManejoHilos extends Thread{
 		
 		@Override
 		public void run(){
+			BufferedReader dataIn = null;
+			PrintWriter dataOut = null;
 			
 			try {
-				
-				System.out.println("Entra en manejo hilos");
-				
+				dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	            dataOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
+
 				Random random = new Random();
 				
 				while (true){
+					String line = dataIn.readLine();
 					
-					this.bancoAgregar = random.nextInt(3) + 1;
-					this.oos = new ObjectOutputStream(this.socket.getOutputStream());
-					
-					if(this.bancoAgregar == 1){	
-						
-						this.oos.writeObject(this.banco1);
-						this.oos.flush();
-						this.ois = new ObjectInputStream(this.socket.getInputStream());
-						this.banco1 = (BancoThread)this.ois.readObject();
-						
-					} else if (this.bancoAgregar == 2){
-						
-						this.oos.writeObject(this.banco2);
-						this.oos.flush();
-						this.ois = new ObjectInputStream(this.socket.getInputStream());
-						this.banco2 = (BancoThread)this.ois.readObject();
-						
-					} else if (this.bancoAgregar == 3){
-						
-						this.oos.writeObject(this.banco3);
-						this.oos.flush();
-						this.ois = new ObjectInputStream(this.socket.getInputStream());
-						this.banco3 = (BancoThread)this.ois.readObject();
+					if (line.equals("VendedorAct")){
+						bancoAgregar = random.nextInt(3) + 1;
+						ponerIngrediente(bancoAgregar);
+					} else if (line == "FumadorTabaco"){
+						//
+					} else if (line == "FumadorPapel"){
+						//
+					} else if (line == "FumadorFosforos"){
+						//
 					}
-					
-					this.oos.close();
-					Thread.sleep(2000);
-					
 					
 				}
 				
-			} catch (IOException | InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		
+		//
+		public void ponerIngrediente(int banco){
 			
+			if (banco == 1){
+				this.banco1.agregarItem();
+				System.out.println("El vendedor puso TABACO");
+				System.out.println("////////////////");
+				stockBancos();
+			} else if (banco == 2){
+				this.banco2.agregarItem();
+				System.out.println("El vendedor puso PAPEL");
+				System.out.println("////////////////");
+				stockBancos();
+			} else if (banco == 3){
+				this.banco3.agregarItem();
+				System.out.println("El vendedor puso FOSFOROS");
+				System.out.println("////////////////");
+				stockBancos();
+			}
+			
+		}
+		
+		public void stockBancos(){
+			
+			System.out.println("STOCK DE BANCOS:");
+			System.out.println("Tabaco - " + this.banco1.getCantidad());
+			System.out.println("Papel - " + this.banco2.getCantidad());
+			System.out.println("Fosforos - " + this.banco3.getCantidad());
+			System.out.println("\n");
 			
 		}
 }
