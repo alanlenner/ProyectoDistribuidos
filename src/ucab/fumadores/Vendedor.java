@@ -16,10 +16,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 
-public class Vendedor implements Serializable{
+public class Vendedor{
 	
 	private Socket socket = null;
 
+	//Comentar..
 	public static void main(String[] args) {
 		
 		Socket socket = null;
@@ -48,7 +49,7 @@ public class Vendedor implements Serializable{
 				dataOut.println("VendedorAct");	
 				
 				try {
-					Thread.sleep(2500);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -58,13 +59,8 @@ public class Vendedor implements Serializable{
 			
 	}
 	
-	
 	public Vendedor(){
 		//
-	}
-		
-	public void ponerIngrediente(){
-		    
 	}
 		
 }
