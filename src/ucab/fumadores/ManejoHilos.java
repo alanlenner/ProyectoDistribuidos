@@ -22,6 +22,8 @@ public class ManejoHilos extends Thread{
 		private int bancoAgregar;
 		private String tipoFumador;
 		private int[] carrito = {0,0,0};
+		private FormatoHora hora = new FormatoHora();
+		private Traza traza = new Traza();
 		
 		//Comentar..
 		public ManejoHilos(Socket socket, int nroConexion, BancoThread banco1, BancoThread banco2, BancoThread banco3){
@@ -78,7 +80,7 @@ public class ManejoHilos extends Thread{
 							fumar();
 							resetCarrito();
 						}
-						
+						traza.insertarTraza(hora.horaActual(), tipoFumador, "Tiene: Tabaco("+carrito[0]+"), Papel("+carrito[1]+") y fosforo("+carrito[2]+")");
 						dataOut.println(this.carrito[0]+"&"+this.carrito[1]+"&"+this.carrito[2]);
 						
 					}
@@ -97,17 +99,20 @@ public class ManejoHilos extends Thread{
 			if (banco == 1){
 				this.banco1.agregarItem();
 				System.out.println("El vendedor puso TABACO");
-				System.out.println("////////////////");
+				System.out.println("------------------------");
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"El vendedor puso TABACO");
 				stockBancos();
 			} else if (banco == 2){
 				this.banco2.agregarItem();
 				System.out.println("El vendedor puso PAPEL");
-				System.out.println("////////////////");
+				System.out.println("------------------------");
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"El vendedor puso PAPEL");
 				stockBancos();
 			} else if (banco == 3){
 				this.banco3.agregarItem();
 				System.out.println("El vendedor puso FOSFOROS");
-				System.out.println("////////////////");
+				System.out.println("------------------------");
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"El vendedor puso FOSFOROS");
 				stockBancos();
 			}
 			
@@ -128,6 +133,7 @@ public class ManejoHilos extends Thread{
 		public synchronized void buscarIngrediente(int ingredientePropio)
 		{
 			int encontro = 0;
+			traza.insertarTraza(hora.horaActual(), tipoFumador,"Comenzo a buscar!.");
 			
 			while (encontro != 1){
 				encontro = buscarEnBancos(ingredientePropio);
@@ -143,14 +149,17 @@ public class ManejoHilos extends Thread{
 			if((ingredientePropio != this.banco1.getTipo()) && (this.banco1.vacio() == 0) && (this.carrito[0] == 0)){
 				this.banco1.quitarItem();
 				this.carrito[0] = 1;
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"Encontro Tabaco");
 				entroEnBanco = 1;
 			} else if ((ingredientePropio != this.banco2.getTipo()) && (this.banco2.vacio() == 0) && (this.carrito[1] == 0)){
 				this.banco2.quitarItem();
 				this.carrito[1] = 1;
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"Encontro Papel");
 				entroEnBanco = 1;
 			} else if ((ingredientePropio != this.banco3.getTipo()) && (this.banco3.vacio() == 0) && (this.carrito[2] == 0)){
 				this.banco3.quitarItem();
 				this.carrito[2] = 1;
+				traza.insertarTraza(hora.horaActual(), tipoFumador,"Encontro Fosforo");
 				entroEnBanco = 1;
 			}
 			
@@ -194,6 +203,7 @@ public class ManejoHilos extends Thread{
 				System.out.println("\t\tRELAX :)\n\n");
 				System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 				System.out.println(":):):):):):):):):):):):):):):):):):):):):):):):):):):):):):):):)\n\n");
+				traza.insertarTraza(hora.horaActual(), tipoFumador, "Ha comenzado a fumar");
 				
 				Thread.sleep(10000);
 				
