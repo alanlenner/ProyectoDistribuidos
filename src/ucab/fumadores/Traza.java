@@ -63,7 +63,11 @@ public class Traza {
 	      //Se procede a exportar el nuevo o actualizado archivo de traza XML   
 	        XMLOutputter xmlOutput = new XMLOutputter();
 	        xmlOutput.setFormat(Format.getPrettyFormat());
+<<<<<<< HEAD
 
+=======
+	        
+>>>>>>> ddc3caf5b37013a96d62e87eb6c31785dec809e5
 	        try {
 	      xmlOutput.output(document, new FileWriter("Traza.xml"));
 	    } catch (IOException e) {
