@@ -26,6 +26,7 @@ public class Vendedor{
 		Socket socket = null;
 		BufferedReader dataIn = null;
 		PrintWriter dataOut = null;
+		XML xml = new XML();
 		
 		try{
 			socket = new Socket("127.0.0.1", 50006);
@@ -43,17 +44,39 @@ public class Vendedor{
         }
 		
 		if (socket != null && dataOut != null && dataIn != null) {
-			int i = 1;
 			while(true){
 				
-				dataOut.println("VendedorAct");	
+				int i = 0;
 				
 				try {
+					
+					if(i>0){
+						dataOut.println("VendedorAct");	
+						
+						String[] entrada = dataIn.readLine().split("&");
+						
+						if(entrada[0].equals("imprimir")){
+							//(fuente, hora, responsable, accion)
+							xml.imprimir("traza_Vendedor", entrada[1], entrada[2], entrada[3]);
+							
+							dataOut.println("ok&");
+						}	
+						
+					} else{
+						dataOut.println("VendedorAct");
+					}
+					
 					Thread.sleep(5000);
+					i++;
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
 			}
 		}
 			

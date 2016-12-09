@@ -47,7 +47,7 @@ public class XML {
 			}
 	    
 	         //  elemento evento
-	         Element evento = new Element("evento");
+	         Element evento = new Element(fuente);
 	         log.addContent(evento);
 
 	         // atributo de eventp

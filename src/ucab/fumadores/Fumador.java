@@ -23,6 +23,7 @@ public class Fumador{
 		Socket socket = null;
 		BufferedReader dataIn = null;
 		PrintWriter dataOut = null;
+		XML xml = new XML();
 		
 		//Cambiar numero..
 		Fumador fumador = new Fumador(3);
@@ -56,16 +57,21 @@ public class Fumador{
 					}
 						
 					String[] nuevos = dataIn.readLine().split("&");
-						
-					//[0] = Tabaco
-					fumador.ingredientes[0] = Integer.parseInt(nuevos[0]);
-					//[1] = Papel
-					fumador.ingredientes[1] = Integer.parseInt(nuevos[1]);
-					//[2] = Fosforo
-					fumador.ingredientes[2] = Integer.parseInt(nuevos[2]);	
-						
+					
+					if(!nuevos[0].equals("imprimir")){
+						//[0] = Tabaco
+						fumador.ingredientes[0] = Integer.parseInt(nuevos[0]);
+						//[1] = Papel
+						fumador.ingredientes[1] = Integer.parseInt(nuevos[1]);
+						//[2] = Fosforo
+						fumador.ingredientes[2] = Integer.parseInt(nuevos[2]);
+					} else {
+						//(fuente, hora, responsable, accion)
+						xml.imprimir("traza_fumadores", nuevos[1], nuevos[2], nuevos[3]);
+					}
+					
 					Thread.sleep(10000);
-				
+						
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -91,5 +97,5 @@ public class Fumador{
 		}
 		
 	}
-
+	
 }
