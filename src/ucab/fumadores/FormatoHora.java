@@ -7,7 +7,7 @@ import java.util.Date;
 public class FormatoHora {
 	//Obtiene la hora del sistema y la convierte al formato HH:mm:ss
 	public static String horaActual(){
-		DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss");
+		DateFormat formatoHora = new SimpleDateFormat("HH:mm:ss:SS");
 		Date fecha = new Date();
 		return formatoHora.format(fecha);
 	}

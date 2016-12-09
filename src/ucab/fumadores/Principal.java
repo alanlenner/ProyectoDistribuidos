@@ -36,13 +36,7 @@ public class Principal{
 		BancoThread banco1 = new BancoThread(1);
 		BancoThread banco2 = new BancoThread(2);
 		BancoThread banco3 = new BancoThread(3);
-
-		/* Es necesario ponerlos a correr? Son hilos verdaremente?
-		banco1.start();
-		banco2.start();
-		banco3.start();
-		*/
-		
+	
 		try {
 			ServerSocket s = new ServerSocket(50006);
 			
