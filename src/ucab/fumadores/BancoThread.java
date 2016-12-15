@@ -19,7 +19,7 @@ public class BancoThread extends Thread implements Serializable{
 		this.cantidad = 0;
 	}
 	
-	//Comentar..
+	
 	@Override
 	public void run() {
 		System.out.println("Banco " + this.tipo + " iniciado.");
@@ -32,7 +32,7 @@ public class BancoThread extends Thread implements Serializable{
 		return this.cantidad;
 	}
 	
-	//Comentar..
+	//Indica si el banco esta vacio.
 	public int vacio()
 	{
 		if (this.cantidad == 0)
@@ -41,17 +41,17 @@ public class BancoThread extends Thread implements Serializable{
 			return 0;
 	}
 
-	//Comentar..
+	//Suma 1 a la cantidad total del banco.
 	public synchronized void agregarItem(){
 		this.cantidad++;
 	}
 	
-	//Comentar..
+	//Resta 1 a la cantidad total del banco.
 	public synchronized void quitarItem(){
 		this.cantidad--;
 	}
 	
-	//Comentar..
+	//Indica que ingrediente se deposita en el banco.
 	public int getTipo()
 	{
 		return this.tipo;

@@ -17,7 +17,7 @@ public class Fumador{
 	//[tabaco, papel, fosforos]
 	private int[] ingredientes = {0,0,0};
 	
-	//Comentar
+	
 	public static void main(String[] args) {
 		
 		Socket socket = null;
@@ -25,7 +25,7 @@ public class Fumador{
 		PrintWriter dataOut = null;
 		XML xml = new XML();
 		
-		//Cambiar numero..
+		//Cambiar numero para c/cliente
 		Fumador fumador = new Fumador(1);
 		
 		try{
@@ -65,7 +65,10 @@ public class Fumador{
 						 */
 						entrada = dataIn.readLine().split("&");
 						/*
-						 *  "ingEncontrado": ...
+						 *  "ingEncontrado": se recibe un mensaje con el ingrediente encontrado y
+						 *  se procede a imprimir en la traza el evento ocurrido, si luego de
+						 *  actualizar las cantidades del carrito, este se encuentra LLENO
+						 *  se procede a fumar.
 						 *  
 						 *  "okFumador": El servidor envia un mensaje de confirmacion conexion y el
 						 *  cliente responde con la primera peticion de "busqueda de ingredientes". 
@@ -87,7 +90,6 @@ public class Fumador{
 								fumador.resetCarrito();
 							}
 							
-							//Thread.sleep(10000);
 							escuchando = false;
 							
 						} else if(entrada[0].equals("okFumador")){
@@ -143,7 +145,7 @@ public class Fumador{
 		
 	}	
 	
-	//Comentar..
+	
 	public Fumador(int tipo){
 		this.tipo = tipo;
 		
@@ -157,7 +159,7 @@ public class Fumador{
 		
 	}
 	
-	//Comentar
+	//Actualiza las cantidades del carrito.
 	public void actualizarCarrito(String encontrado){
 		
 		if(encontrado.equals("TABACO")){
@@ -170,7 +172,7 @@ public class Fumador{
 		
 	}
 	
-	//Comentar
+	//Resetea a 0 las cantidades del carrito exceptuando el ingrediente propio.
 	public void resetCarrito(){
 		this.ingredientes[0] = 0;
 		this.ingredientes[1] = 0;
@@ -186,7 +188,7 @@ public class Fumador{
 		
 	}
 	
-	//Comentar
+	//Indica si el fumador posee los 3 ingredientes necesarios para fumar.
 	public boolean carritoLleno(){
 				
 		if((this.ingredientes[0] == 1) && (this.ingredientes[1] == 1) && (this.ingredientes[2] == 1)){
@@ -197,7 +199,7 @@ public class Fumador{
 		
 	}
 	
-	//Comentar
+	//Metodo que indica que el fumador esta fumando vlr.
 	public void fumar(){
 				
 		System.out.println("Enrolando el TABACO...");

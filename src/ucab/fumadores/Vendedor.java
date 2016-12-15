@@ -130,7 +130,6 @@ public class Vendedor{
 	
 	/*
 	 * Devuelve un arreglo con los dos ingredientes que se agregaran.
-	 * 
 	 * La seleccion de ingredientes es totalmente aleatoria.
 	 */
 	public int[] ingredientesAPoner(){

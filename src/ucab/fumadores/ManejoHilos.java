@@ -39,7 +39,7 @@ public class ManejoHilos extends Thread{
 		this.socket = socket;
 	}
 		
-	//Comentar..
+
 	@Override
 	public void run(){
 		BufferedReader dataIn = null;
@@ -57,14 +57,16 @@ public class ManejoHilos extends Thread{
 					/*
 					 * Logica del Vendedor
 					 */
+					//	Mensaje recibido al conectarse el vendedor, se confirma la conexion.
 					if (entrada[0].equals("conexionVendedor")){	
 						dataOut.println("okVendedor&");
 						
+					//	Mensaje recibido cuando un vendedor quiere poner dos ingredientes.	
 					} else if (entrada[0].equals("vendedor")){		
-						//Se pone UN (1) ingrediente a la vez.
+						//	Se pone UN (1) ingrediente a la vez.
 						ponerIngrediente(Integer.parseInt(entrada[1]));
 						ponerIngrediente(Integer.parseInt(entrada[2]));
-					
+						//	Se envia la hora, y los ingredientes puestos
 						dataOut.println("ingPuestos&"+hora.horaActual()+"&"+this.ingPuestos[0]+" y "+this.ingPuestos[1]);
 							
 						resetIngPuestos();
@@ -73,19 +75,26 @@ public class ManejoHilos extends Thread{
 					/*
 					 * Logica del Fumador
 					 */
+					//	Mensaje recibido al conectarse un fumador, se confirma la conexion.
 					if (entrada[0].equals("conexionFumador")){	
 						dataOut.println("okFumador&");
-							
+						
+					//	Mensaje recibido cuando un fumador busca ingredientes.	
 					} else if (entrada[0].equals("fumador")){		
 						setTipoFumador(entrada[1]);
+						//	Se setea un carrito de ingredientes auxiliar para saber que ingredientes faltan.
 						setCarritoFumador(this.tipoFumador, entrada[2], entrada[3]);
 						buscarIngrediente(this.tipoFumador);
+						//	Se envia la hora, el fumador y el ingrediente que fue tomado.
 						dataOut.println("ingEncontrado&"+hora.horaActual()+"&"+this.tipoFumador+"&"+this.ingEncontrado);
 						
 					} else if(entrada[0].equals("solicitud")){
 						//
 					}
 					
+					/*	Siempre se muestra la cantidad de los bancos, exceptuando el momento de la primera 
+					 *	conexion del vendedor
+					 */
 					if (!entrada[0].equals("conexionVendedor")){
 						stockBancos();
 					}
@@ -98,7 +107,12 @@ public class ManejoHilos extends Thread{
 		}
 	}
 		
-	//Comentar
+	/*
+	 * Metodo para que un vendedor ponga un ingrediente.
+	 * Se checkea si el banco en el cual se pondra un ingrediente esta bloqueado,
+	 * en el caso de que no lo este, se procede a colocar el ingrediente correspondiente
+	 * a dicho banco.
+	 */
 	public synchronized void ponerIngrediente(int banco){
 			
 		try{
@@ -153,7 +167,11 @@ public class ManejoHilos extends Thread{
 		
 	}
 	
-	//Comentar
+	/*	Metodo para buscar un ingrediente, se recibe el tipo de fumador que es,
+	 *	en base a esto se sabe el ingrediente que el fumador posee, luego se entra
+	 *	a un ciclo del cual no sale hasta que consiga al menos UN ingrediente de 
+	 *	los faltantes.
+	 */
 	public synchronized  void buscarIngrediente(String tipo){
 			
 		int encontro = 0;
@@ -172,7 +190,11 @@ public class ManejoHilos extends Thread{
 		}		
 	}
 				
-	//Comentar
+	/*	Metodo en el cual se checkea si alguno de los bancos que le corresponden
+	 *	al fumador estan o no bloqueados.
+	 *	En caso de no estarlo se procede a checkear que el banco no este vacio, y asi
+	 *	poder proceder a tomar un ingrediente de este banco.
+	 */
 	public synchronized int buscarEnBancos(int ingredientePropio){
 		
 		int entroEnBanco = 0;
@@ -227,7 +249,7 @@ public class ManejoHilos extends Thread{
 		return entroEnBanco;
 	}
 	
-	//Comentar..
+	//Metodo para mostrar las cantidades de un banco.
 	public void stockBancos(){
 		
 		System.out.println(" _______________________________________________");
@@ -243,7 +265,7 @@ public class ManejoHilos extends Thread{
 			
 	}
 		
-	//Comentar
+	//Metodo para resetear los ingredientes que puso un vendedor.
 	public void resetIngPuestos(){
 			
 		this.ingPuestos[0] = "";
@@ -251,7 +273,7 @@ public class ManejoHilos extends Thread{
 			
 	}
 		
-	//Comentar
+	//Metodo para poder setear el tipo de fumador.
 	public void setTipoFumador(String tipo){
 			
 		if (tipo.equals("1")){
@@ -267,7 +289,7 @@ public class ManejoHilos extends Thread{
 		
 	}
 		
-	//Comentar
+	//Metodo para actualizar las cantidades del carrito de ingredientes de un fumador.
 	public void setCarritoFumador(String tipo, String ing1, String ing2){
 			
 		if (tipo.equals("FumadorTABACO")){
@@ -287,7 +309,7 @@ public class ManejoHilos extends Thread{
 		}	
 	}
 		
-	//Comentar
+	//Metodo que indica cuales son los bancos que corresponden a un fumador.
 	public int[] bancosABuscar(int ingrediente){
 		
 		int[] bancos = {0,0};
@@ -306,7 +328,7 @@ public class ManejoHilos extends Thread{
 		return bancos;
 	}
 
-	//Comentar
+	//Metodo que bloquea un banco.
 	public void bloquearZona(int banco){
 		System.out.println("'bout to block dat zone thou! ZONE: "+ banco);
 		if (banco == 1){
@@ -318,7 +340,7 @@ public class ManejoHilos extends Thread{
 		}
 	}
 	
-	//Comentar
+	//Metodo que desbloquea un banco.
 	public void desbloquearZona(int banco){
 		System.out.println("'bout to unlock dat zone to keep smoking braw. ZONE: "+banco);
 		if (banco == 1){
@@ -330,7 +352,7 @@ public class ManejoHilos extends Thread{
 		}
 	}
 	
-	//Comentar
+	//Metodo que indica si un banco esta o no bloqueado.
 	public boolean zonaBloqueada(int banco){
 		
 		boolean bloqueo = false;
