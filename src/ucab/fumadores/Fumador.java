@@ -26,11 +26,11 @@ public class Fumador{
 		XML xml = new XML();
 		
 		//Cambiar numero..
-		Fumador fumador = new Fumador(3);
+		Fumador fumador = new Fumador(1);
 		
 		try{
 			socket = new Socket("127.0.0.1", 50006);
-			//socket = new Socket("190.38.247.224", 50006);
+			//socket = new Socket("JAMS", 50006);
 			
 			dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             dataOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);
@@ -45,40 +45,99 @@ public class Fumador{
 		
 		if (socket != null && dataOut != null && dataIn != null) {
 			
+			// En el momento de la conexion se envia un mensaje notificando la misma.
+			dataOut.println("conexionFumador&");
+			
 			while(true){
 				
-				try{	
-					if (fumador.tipo == 1){
-						dataOut.println("FumadorTabaco&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[1]+"&"+fumador.ingredientes[2]);
-					} else if(fumador.tipo == 2){
-						dataOut.println("FumadorPapel&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[1]+"&"+fumador.ingredientes[2]);
-					} else if(fumador.tipo == 3){
-						dataOut.println("FumadorFosforos&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[1]+"&"+fumador.ingredientes[2]);
+				boolean escuchando = true;
+				String[] entrada = {"","","",""};
+				String ingEncontrado = "";
+				
+				try	{	
+					
+					while(escuchando == true){
+						
+						/*
+						 *	Posibles mensajes entrantes:
+						 *	1. [ okFumador ]
+						 *	2. [ ingEncontrado , horaServidor , fumador, Ingrediente ]
+						 */
+						entrada = dataIn.readLine().split("&");
+						/*
+						 *  "ingEncontrado": ...
+						 *  
+						 *  "okFumador": El servidor envia un mensaje de confirmacion conexion y el
+						 *  cliente responde con la primera peticion de "busqueda de ingredientes". 
+						 *  OJO: este mensaje solo se recibe una vez!
+						 */
+						if(entrada[0].equals("ingEncontrado")){
+							
+							ingEncontrado = entrada[3];
+							fumador.actualizarCarrito(ingEncontrado);
+							xml.imprimir("traza_fumador", entrada[1], entrada[2], "Encontro "+entrada[3]+
+									" || Tabaco("+fumador.ingredientes[0]+"); "
+											+ "Papel("+fumador.ingredientes[1]+"); "
+													+ "Fosforo("+fumador.ingredientes[2]+");");
+							
+							if (fumador.carritoLleno()){
+								xml.imprimir("traza_fumador", entrada[1], entrada[2], "Esta fumando");
+								fumador.fumar();
+								Thread.sleep(15000);
+								fumador.resetCarrito();
+							}
+							
+							//Thread.sleep(10000);
+							escuchando = false;
+							
+						} else if(entrada[0].equals("okFumador")){
+							
+							if (fumador.tipo == 1){
+								dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[1]+"&"+fumador.ingredientes[2]);
+								
+							} else if(fumador.tipo == 2){
+								dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[2]);
+								
+							} else if(fumador.tipo == 3){
+								dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[1]);
+							}
+							
+							escuchando = false;
+							
+						}
+			
+					}
+					
+					/*
+					 * Manda al servidor un mensaje con el tipo de fumador y los ingredientes 
+					 * a buscar.
+					 * 
+					 * Solo se pasara por alto en el momento de confirmacion de conexion, de
+					 *  resto SIEMPRE se ejecutara.
+					 * 
+					 * Mensaje: "fumador&tipo&ingrediente1&ingrediente2"
+					 * 	
+					 * -Los mensajes se separaran con el simbolo "&".
+					 * -El primer bloque del mensaje es para que el servidor pueda filtrar.
+					 */
+					if(!entrada[0].equals("okFumador")){
+						
+						if (fumador.tipo == 1){
+							dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[1]+"&"+fumador.ingredientes[2]);
+							
+						} else if(fumador.tipo == 2){
+							dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[2]);
+							
+						} else if(fumador.tipo == 3){
+							dataOut.println("fumador&"+fumador.tipo+"&"+fumador.ingredientes[0]+"&"+fumador.ingredientes[1]);
+						}
+						
 					}
 						
-					String[] nuevos = dataIn.readLine().split("&");
-					
-					if(!nuevos[0].equals("imprimir")){
-						//[0] = Tabaco
-						fumador.ingredientes[0] = Integer.parseInt(nuevos[0]);
-						//[1] = Papel
-						fumador.ingredientes[1] = Integer.parseInt(nuevos[1]);
-						//[2] = Fosforo
-						fumador.ingredientes[2] = Integer.parseInt(nuevos[2]);
-					} else {
-						//(fuente, hora, responsable, accion)
-						xml.imprimir("traza_fumadores", nuevos[1], nuevos[2], nuevos[3]);
-					}
-					
-					Thread.sleep(10000);
-						
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} 
 			}
 		}
 		
@@ -97,5 +156,55 @@ public class Fumador{
 		}
 		
 	}
+	
+	//Comentar
+	public void actualizarCarrito(String encontrado){
+		
+		if(encontrado.equals("TABACO")){
+			this.ingredientes[0] = 1;
+		} else if(encontrado.equals("PAPEL")){
+			this.ingredientes[1] = 1;
+		} else if(encontrado.equals("FOSFOROS")){
+			this.ingredientes[2] = 1;
+		}
+		
+	}
+	
+	//Comentar
+	public void resetCarrito(){
+		this.ingredientes[0] = 0;
+		this.ingredientes[1] = 0;
+		this.ingredientes[2] = 0;
+		
+		if (this.tipo == 1){
+			this.ingredientes[0] = 1;
+		} else if (this.tipo == 2){
+			this.ingredientes[1] = 1;
+		} else if (this.tipo == 3){
+			this.ingredientes[2] = 1;
+		}
+		
+	}
+	
+	//Comentar
+	public boolean carritoLleno(){
+				
+		if((this.ingredientes[0] == 1) && (this.ingredientes[1] == 1) && (this.ingredientes[2] == 1)){
+			return true;
+		} else {
+			return false;	
+		}
+		
+	}
+	
+	//Comentar
+	public void fumar(){
+				
+		System.out.println("Enrolando el TABACO...");
+		System.out.println("Prendiendo el CIGARRO...");
+		System.out.println("RELAX :)\n\n");
+				
+	}
+	
 	
 }

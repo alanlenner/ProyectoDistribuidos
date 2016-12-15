@@ -27,7 +27,7 @@ public class XML {
 	
 		try {
 			
-			File rutaXml = new File("log_proyecto.xml");
+			File rutaXml = new File(fuente+".xml");
 			Document doc = null;
 			Element log = null;
 			
@@ -66,7 +66,7 @@ public class XML {
 	         // escribir contenido al archivo xml
 	         XMLOutputter xmlOutput = new XMLOutputter();
 	         xmlOutput.setFormat(Format.getPrettyFormat());
-	         xmlOutput.output(doc, new FileWriter("log_proyecto.xml"));
+	         xmlOutput.output(doc, new FileWriter(fuente+".xml"));
 	         
 	      } catch (Exception e) {
 	         e.printStackTrace();

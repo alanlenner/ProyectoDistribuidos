@@ -36,7 +36,7 @@ public class Principal{
 		BancoThread banco1 = new BancoThread(1);
 		BancoThread banco2 = new BancoThread(2);
 		BancoThread banco3 = new BancoThread(3);
-	
+		
 		try {
 			ServerSocket s = new ServerSocket(50006);
 			
@@ -44,9 +44,7 @@ public class Principal{
 			
 			while(true){
 				Socket ss = s.accept();
-				System.out.println("\nRecibiendo conexion numero" + i + "\n");
-				new ManejoHilos(ss, i, banco1, banco2, banco3).start();
-				i++;
+				new ManejoHilos(ss, banco1, banco2, banco3).start();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
